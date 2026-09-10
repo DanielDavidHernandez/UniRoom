@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>UniRoom | Mis reservas</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,.08);
+        }
+
+        .logo {
+            color: #2563eb;
+            font-weight: bold;
+            font-size: 28px;
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .user {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .header-actions a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .home {
+            color: #2563eb;
+        }
+
+        .logout {
+            color: #dc2626;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 50px 25px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            margin: 35px 0 18px;
+        }
+
+        .message {
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+
+        .cards {
+            display: grid;
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 15px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.06);
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .card h3 {
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            margin-bottom: 7px;
+            color: #6b7280;
+        }
+
+        .actions {
+            min-width: 190px;
+            text-align: center;
+        }
+
+        .confirmed {
+            display: block;
+            background: #ecfdf5;
+            color: #047857;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .cancelled {
+            display: block;
+            background: #fef2f2;
+            color: #b91c1c;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .waiting {
+            display: block;
+            background: #fff7ed;
+            color: #9a3412;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        button {
+            border: none;
+            width: 100%;
+            padding: 11px 15px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cancel-button {
+            background: #dc2626;
+        }
+
+        .leave-button {
+            background: #f59e0b;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+
+        @media(max-width:750px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<header>
+
+    <a href="/" class="logo">
+        UniRoom
+    </a>
+
+    <div class="header-actions">
+
+        <span class="user">
+
+            👤
+            <span th:text="${studentName}">
+                Estudiante
+            </span>
+
+        </span>
+
+        <a href="/" class="home">
+            Inicio
+        </a>
+
+        <a href="/logout" class="logout">
+            Cerrar sesión
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <h1>
+        Mis reservas
+    </h1>
+
+    <p class="subtitle">
+        Consulta tus reservas y tu posición en listas de espera.
+    </p>
+
+
+    <div
+        th:if="${successMessage}"
+        class="message success"
+        th:text="${successMessage}">
+    </div>
+
+
+    <div
+        th:if="${errorMessage}"
+        class="message error"
+        th:text="${errorMessage}">
+    </div>
+
+
+    <h2>
+        Reservas
+    </h2>
+
+
+    <section
+        class="cards"
+        th:if="${!#lists.isEmpty(reservations)}">
+
+
+        <article
+            class="card"
+            th:each="reservation : ${reservations}">
+
+
+            <div>
+
+                <h3
+                    th:text="${reservation.timeSlot.studyRoom.name}">
+                    Sala
+                </h3>
+
+                <p>
+                    📍
+                    <span
+                        th:text="${reservation.timeSlot.studyRoom.location}">
+                    </span>
+                </p>
+
+                <p>
+                    📅
+                    <span
+                        th:text="${reservation.timeSlot.startTime.toLocalDate()}">
+                    </span>
+                </p>
+
+                <p>
+                    🕐
+                    <span
+                        th:text="${reservation.timeSlot.startTime.toLocalTime()}">
+                    </span>
+
+                    -
+
+                    <span
+                        th:text="${reservation.timeSlot.endTime.toLocalTime()}">
+                    </span>
+                </p>
+
+                <p>
+                    Reserva N.º
+                    <strong th:text="${reservation.id}">
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <div class="actions">
+
+                <span
+                    th:if="${reservation.status == 'CONFIRMED'}"
+                    class="confirmed">
+
+                    ✓ Confirmada
+
+                </span>
+
+                <form
+                    th:if="${reservation.status == 'CONFIRMED'}"
+                    th:action="@{/mis-reservas/{id}/cancelar(id=${reservation.id})}"
+                    method="post"
+                    onsubmit="return confirm('¿Seguro que deseas cancelar esta reserva?');">
+
+                    <button
+                        class="cancel-button"
+                        type="submit">
+
+                        Cancelar reserva
+
+                    </button>
+
+                </form>
+
+
+                <span
+                    th:if="${reservation.status == 'CANCELLED'}"
+                    class="cancelled">
+
+                    Cancelada
+
+                </span>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <div
+        class="empty"
+        th:if="${#lists.isEmpty(reservations)}">
+
+        No tienes reservas registradas.
+
+    </div>
+
+
+
+    <h2>
+        Listas de espera
+    </h2>
+
+
+    <section
+        class="cards"
+        th:if="${!#lists.isEmpty(waitlistEntries)}">
+
+
+        <article
+            class="card"
+            th:each="entry : ${waitlistEntries}">
+
+
+            <div>
+
+                <h3
+                    th:text="${entry.timeSlot.studyRoom.name}">
+                    Sala
+                </h3>
+
+                <p>
+                    📍
+                    <span
+                        th:text="${entry.timeSlot.studyRoom.location}">
+                    </span>
+                </p>
+
+                <p>
+                    📅
+                    <span
+                        th:text="${entry.timeSlot.startTime.toLocalDate()}">
+                    </span>
+                </p>
+
+                <p>
+                    🕐
+                    <span
+                        th:text="${entry.timeSlot.startTime.toLocalTime()}">
+                    </span>
+
+                    -
+
+                    <span
+                        th:text="${entry.timeSlot.endTime.toLocalTime()}">
+                    </span>
+                </p>
+
+            </div>
+
+
+            <div class="actions">
+
+                <span class="waiting">
+
+                    Posición
+                    <span th:text="${entry.position}">
+                        1
+                    </span>
+
+                </span>
+
+
+                <form
+                    th:action="@{/mis-reservas/lista-espera/{id}/salir(id=${entry.id})}"
+                    method="post"
+                    onsubmit="return confirm('¿Deseas salir de esta lista de espera?');">
+
+                    <button
+                        class="leave-button"
+                        type="submit">
+
+                        Salir de la lista
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <div
+        class="empty"
+        th:if="${#lists.isEmpty(waitlistEntries)}">
+
+        No estás en ninguna lista de espera.
+
+    </div>
+
+</main>
+
+
+<footer>
+    UniRoom · Sistema de Reservas de Salas de Estudio Universitarias
+</footer>
+
+
+</body>
+
+</html>

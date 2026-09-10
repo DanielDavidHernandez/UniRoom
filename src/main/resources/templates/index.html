@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UniRoom | Reservas de Salas</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            width: 100%;
+            background: #ffffff;
+            padding: 17px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 29px;
+            font-weight: 800;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            color: #2563eb;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: bold;
+            color: #111827;
+            background: #eff6ff;
+            padding: 9px 13px;
+            border-radius: 8px;
+        }
+
+        .login-link {
+            background: #2563eb;
+            color: white !important;
+            padding: 10px 17px;
+            border-radius: 8px;
+        }
+
+        .login-link:hover {
+            background: #1d4ed8;
+            color: white !important;
+        }
+
+        .logout-link {
+            color: #dc2626 !important;
+        }
+
+        .logout-link:hover {
+            color: #b91c1c !important;
+        }
+
+        .hero {
+            min-height: 470px;
+            padding: 70px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 60px;
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+        }
+
+        .hero-content {
+            max-width: 620px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .hero h1 {
+            font-size: 49px;
+            line-height: 1.1;
+            color: #111827;
+            margin-bottom: 22px;
+        }
+
+        .hero h1 span {
+            color: #2563eb;
+        }
+
+        .hero p {
+            font-size: 18px;
+            line-height: 1.7;
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 13px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 13px 21px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: white;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            padding: 12px 20px;
+            border-radius: 9px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #eff6ff;
+        }
+
+        .hero-card {
+            width: 350px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.11);
+        }
+
+        .hero-card h3 {
+            font-size: 22px;
+            margin-bottom: 22px;
+        }
+
+        .hero-card-item {
+            margin-bottom: 15px;
+            color: #4b5563;
+            line-height: 1.5;
+        }
+
+        .db-status {
+            background: #ecfdf5;
+            color: #047857;
+            padding: 13px;
+            border-radius: 9px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .session-card {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 13px;
+            border-radius: 9px;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .rooms-section {
+            padding: 65px 8%;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .section-heading {
+            margin-bottom: 32px;
+        }
+
+        .section-heading h2 {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .section-heading p {
+            color: #6b7280;
+            font-size: 17px;
+        }
+
+        .login-warning {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            padding: 16px 18px;
+            border-radius: 10px;
+            margin-bottom: 28px;
+        }
+
+        .login-warning a {
+            color: #2563eb;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
+        .room-card {
+            background: white;
+            padding: 26px;
+            border-radius: 16px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+            transition: 0.2s;
+        }
+
+        .room-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.10);
+        }
+
+        .room-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 18px;
+        }
+
+        .room-card h3 {
+            font-size: 22px;
+            margin-bottom: 13px;
+            color: #111827;
+        }
+
+        .room-card p {
+            color: #6b7280;
+            margin-bottom: 9px;
+        }
+
+        .available {
+            color: #059669;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 18px;
+        }
+
+        .room-button {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            background: #2563eb;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .room-button:hover {
+            background: #1d4ed8;
+        }
+
+        .empty-rooms {
+            background: white;
+            padding: 35px;
+            text-align: center;
+            border-radius: 15px;
+            color: #6b7280;
+        }
+
+        .features {
+            background: #ffffff;
+            padding: 60px 8%;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .feature-card {
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            padding: 30px 8%;
+            text-align: center;
+        }
+
+        footer p {
+            color: #d1d5db;
+            margin-top: 7px;
+        }
+
+        @media (max-width: 900px) {
+
+            header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero h1 {
+                font-size: 39px;
+            }
+
+            .hero-card {
+                width: 100%;
+            }
+
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .hero {
+                padding: 50px 6%;
+            }
+
+            .rooms-section {
+                padding: 50px 6%;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            nav {
+                gap: 13px;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<header>
+
+    <a href="/" class="logo">
+        UniRoom
+    </a>
+
+
+    <nav>
+
+        <a href="/">
+            Inicio
+        </a>
+
+
+        <a href="#salas">
+            Salas
+        </a>
+
+
+        <a
+            th:if="${loggedIn}"
+            href="/mis-reservas">
+            Mis reservas
+        </a>
+
+
+        <span
+            th:if="${loggedIn}"
+            class="user-info">
+
+            👤
+
+            <span th:text="${studentName}">
+                Estudiante
+            </span>
+
+        </span>
+
+
+        <a
+            th:if="${loggedIn}"
+            href="/logout"
+            class="logout-link">
+
+            Cerrar sesión
+
+        </a>
+
+
+        <a
+            th:unless="${loggedIn}"
+            href="/login"
+            class="login-link">
+
+            Iniciar sesión
+
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            Sistema universitario de reservas
+        </div>
+
+        <h1>
+            Tu espacio para estudiar,
+            <span>cuando lo necesites.</span>
+        </h1>
+
+        <p>
+            Consulta las salas disponibles de la universidad,
+            revisa sus horarios y realiza tus reservas de forma
+            rápida y segura con UniRoom.
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <a
+                href="#salas"
+                class="btn-primary">
+
+                Buscar una sala
+
+            </a>
+
+
+            <a
+                th:if="${loggedIn}"
+                href="/mis-reservas"
+                class="btn-secondary">
+
+                Ver mis reservas
+
+            </a>
+
+
+            <a
+                th:unless="${loggedIn}"
+                href="/login"
+                class="btn-secondary">
+
+                Iniciar sesión
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="hero-card">
+
+        <h3>
+            UniRoom
+        </h3>
+
+
+        <div class="hero-card-item">
+            📍 Consulta salas del campus
+        </div>
+
+
+        <div class="hero-card-item">
+            🕐 Revisa horarios disponibles
+        </div>
+
+
+        <div class="hero-card-item">
+            👥 Consulta la capacidad de cada sala
+        </div>
+
+
+        <div class="hero-card-item">
+            🔒 Reserva con tu cuenta institucional
+        </div>
+
+
+        <div class="db-status">
+            ● Sistema conectado a MySQL
+        </div>
+
+
+        <div
+            th:if="${loggedIn}"
+            class="session-card">
+
+            Sesión iniciada como
+
+            <strong th:text="${studentName}">
+                Estudiante
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<section
+    class="rooms-section"
+    id="salas">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Salas de estudio
+        </h2>
+
+        <p>
+            Selecciona una sala para consultar sus horarios disponibles.
+        </p>
+
+    </div>
+
+
+
+    <div
+        th:unless="${loggedIn}"
+        class="login-warning">
+
+        Puedes consultar las salas y sus horarios sin iniciar sesión.
+
+        Para realizar una reserva debes
+
+        <a href="/login">
+            iniciar sesión.
+        </a>
+
+    </div>
+
+
+
+    <div
+        class="room-grid"
+        th:if="${!#lists.isEmpty(rooms)}">
+
+
+        <div
+            class="room-card"
+            th:each="room : ${rooms}">
+
+
+            <div class="room-icon">
+                📚
+            </div>
+
+
+            <h3 th:text="${room.name}">
+                Sala 101
+            </h3>
+
+
+            <p>
+                📍
+                <span th:text="${room.location}">
+                    Biblioteca Central
+                </span>
+            </p>
+
+
+            <p>
+                👥 Capacidad:
+                <strong th:text="${room.capacity}">
+                    6
+                </strong>
+                personas
+            </p>
+
+
+            <div class="available">
+                ● Sala activa
+            </div>
+
+
+            <a
+                th:href="@{/salas/{id}(id=${room.id})}"
+                class="room-button">
+
+                Ver horarios
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <div
+        class="empty-rooms"
+        th:if="${#lists.isEmpty(rooms)}">
+
+        No hay salas activas disponibles en este momento.
+
+    </div>
+
+</section>
+
+
+
+<section class="features">
+
+    <div class="features-container">
+
+
+        <div class="feature-card">
+
+            <h3>
+                🔎 Consulta
+            </h3>
+
+            <p>
+                Visualiza las salas activas, su ubicación,
+                capacidad y horarios disponibles.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <h3>
+                ✅ Reserva
+            </h3>
+
+            <p>
+                Inicia sesión y selecciona directamente el horario
+                que deseas reservar.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <h3>
+                📋 Seguimiento
+            </h3>
+
+            <p>
+                Consulta tus reservas confirmadas desde la opción
+                Mis reservas.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<footer>
+
+    <strong>
+        UniRoom
+    </strong>
+
+    <p>
+        Sistema de Reservas de Salas de Estudio Universitarias
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>

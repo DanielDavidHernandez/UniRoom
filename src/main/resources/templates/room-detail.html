@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>UniRoom | Horarios</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        header {
+            background: white;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,.08);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .header-actions a {
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back {
+            color: #2563eb;
+        }
+
+        .logout {
+            color: #dc2626;
+        }
+
+        .user {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 45px 25px;
+        }
+
+        .room-header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.07);
+        }
+
+        .room-header h1 {
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .room-header p {
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .message {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .login-warning {
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .login-warning a {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        h2 {
+            margin: 30px 0 20px;
+        }
+
+        .slots {
+            display: grid;
+            gap: 16px;
+        }
+
+        .slot {
+            background: white;
+            padding: 22px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+        .time {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .date {
+            color: #6b7280;
+            margin-bottom: 9px;
+        }
+
+        .available {
+            color: #059669;
+            font-weight: bold;
+        }
+
+        .reserved {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .actions {
+            min-width: 230px;
+            text-align: right;
+        }
+
+        button,
+        .login-button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .reserve {
+            background: #2563eb;
+            color: white;
+        }
+
+        .waitlist {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .login-button {
+            background: #2563eb;
+            color: white;
+        }
+
+        .position {
+            display: inline-block;
+            background: #fff7ed;
+            color: #9a3412;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        footer {
+            margin-top: 50px;
+            background: #111827;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        @media(max-width:750px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .slot {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                width: 100%;
+                text-align: left;
+            }
+
+            button,
+            .login-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <a href="/" class="logo">
+        UniRoom
+    </a>
+
+    <div class="header-actions">
+
+        <span
+            th:if="${loggedIn}"
+            class="user">
+
+            👤
+            <span th:text="${studentName}">
+                Estudiante
+            </span>
+
+        </span>
+
+        <a href="/" class="back">
+            Volver al inicio
+        </a>
+
+        <a
+            th:if="${loggedIn}"
+            href="/mis-reservas"
+            class="back">
+
+            Mis reservas
+
+        </a>
+
+        <a
+            th:if="${loggedIn}"
+            href="/logout"
+            class="logout">
+
+            Cerrar sesión
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <section class="room-header">
+
+        <h1 th:text="${room.name}">
+            Sala
+        </h1>
+
+        <p>
+            📍 Ubicación:
+            <strong th:text="${room.location}">
+                Ubicación
+            </strong>
+        </p>
+
+        <p>
+            👥 Capacidad:
+            <strong th:text="${room.capacity}">
+                0
+            </strong>
+            personas
+        </p>
+
+    </section>
+
+
+    <div
+        th:if="${successMessage}"
+        class="message success"
+        th:text="${successMessage}">
+    </div>
+
+
+    <div
+        th:if="${errorMessage}"
+        class="message error"
+        th:text="${errorMessage}">
+    </div>
+
+
+    <div
+        th:unless="${loggedIn}"
+        class="login-warning">
+
+        Puedes consultar los horarios.
+
+        Para reservar o ingresar a una lista de espera debes
+
+        <a href="/login">
+            iniciar sesión.
+        </a>
+
+    </div>
+
+
+    <h2>
+        Horarios
+    </h2>
+
+
+    <section class="slots">
+
+        <article
+            class="slot"
+            th:each="slot : ${timeSlots}">
+
+            <div>
+
+                <div class="time">
+
+                    <span th:text="${slot.startTime.toLocalTime()}">
+                        08:00
+                    </span>
+
+                    -
+
+                    <span th:text="${slot.endTime.toLocalTime()}">
+                        09:00
+                    </span>
+
+                </div>
+
+                <div
+                    class="date"
+                    th:text="${slot.startTime.toLocalDate()}">
+
+                    2026-09-10
+
+                </div>
+
+                <div
+                    th:if="${slot.status == 'AVAILABLE'}"
+                    class="available">
+
+                    ● Disponible
+
+                </div>
+
+                <div
+                    th:unless="${slot.status == 'AVAILABLE'}"
+                    class="reserved">
+
+                    ● Reservada
+
+                </div>
+
+            </div>
+
+
+            <div class="actions">
+
+                <!-- RESERVAR -->
+
+                <form
+                    th:if="${slot.status == 'AVAILABLE' and loggedIn}"
+                    th:action="@{/salas/{roomId}/reservar(roomId=${room.id})}"
+                    method="post">
+
+                    <input
+                        type="hidden"
+                        name="timeSlotId"
+                        th:value="${slot.id}">
+
+                    <button
+                        type="submit"
+                        class="reserve">
+
+                        Reservar
+
+                    </button>
+
+                </form>
+
+
+                <!-- LOGIN -->
+
+                <a
+                    th:if="${slot.status == 'AVAILABLE' and !loggedIn}"
+                    href="/login"
+                    class="login-button">
+
+                    Iniciar sesión para reservar
+
+                </a>
+
+
+                <!-- YA ESTÁ EN COLA -->
+
+                <div
+                    th:if="${slot.status != 'AVAILABLE'
+                    and loggedIn
+                    and waitlistPositions.containsKey(slot.id)}"
+                    class="position">
+
+                    En lista de espera · Posición
+
+                    <span
+                        th:text="${waitlistPositions.get(slot.id)}">
+                        1
+                    </span>
+
+                </div>
+
+
+                <!-- UNIRSE A COLA -->
+
+                <form
+                    th:if="${slot.status != 'AVAILABLE'
+                    and loggedIn
+                    and !waitlistPositions.containsKey(slot.id)}"
+                    th:action="@{/salas/{roomId}/lista-espera(roomId=${room.id})}"
+                    method="post">
+
+                    <input
+                        type="hidden"
+                        name="timeSlotId"
+                        th:value="${slot.id}">
+
+                    <button
+                        type="submit"
+                        class="waitlist">
+
+                        Unirme a lista de espera
+
+                    </button>
+
+                </form>
+
+
+                <a
+                    th:if="${slot.status != 'AVAILABLE' and !loggedIn}"
+                    href="/login"
+                    class="login-button">
+
+                    Iniciar sesión para lista de espera
+
+                </a>
+
+            </div>
+
+        </article>
+
+    </section>
+
+</main>
+
+
+<footer>
+    UniRoom · Sistema de Reservas de Salas de Estudio Universitarias
+</footer>
+
+</body>
+
+</html>

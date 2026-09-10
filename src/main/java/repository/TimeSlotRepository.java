@@ -15,17 +15,20 @@ public class TimeSlotRepository {
         this.entityManager = entityManager;
     }
 
+    // Crear un horario
     public TimeSlot save(TimeSlot timeSlot) {
         entityManager.persist(timeSlot);
         return timeSlot;
     }
 
+    // Buscar horario por ID
     public Optional<TimeSlot> findById(Long id) {
         return Optional.ofNullable(
                 entityManager.find(TimeSlot.class, id)
         );
     }
 
+    // Obtener todos los horarios
     public List<TimeSlot> findAll() {
         return entityManager
                 .createQuery(
@@ -35,10 +38,12 @@ public class TimeSlotRepository {
                 .getResultList();
     }
 
+    // Actualizar horario
     public TimeSlot update(TimeSlot timeSlot) {
         return entityManager.merge(timeSlot);
     }
 
+    // Eliminar horario
     public void delete(TimeSlot timeSlot) {
         entityManager.remove(
                 entityManager.contains(timeSlot)
@@ -47,6 +52,7 @@ public class TimeSlotRepository {
         );
     }
 
+    // Buscar horario y bloquearlo para evitar doble reserva
     public Optional<TimeSlot> findByIdForUpdate(Long id) {
         return entityManager
                 .createQuery(
@@ -63,6 +69,7 @@ public class TimeSlotRepository {
                 .findFirst();
     }
 
+    // Obtener únicamente horarios disponibles
     public List<TimeSlot> findAvailableSlots() {
         return entityManager
                 .createQuery(
@@ -75,6 +82,23 @@ public class TimeSlotRepository {
                         """,
                         TimeSlot.class
                 )
+                .getResultList();
+    }
+
+    // Obtener todos los horarios correspondientes a una sala
+    public List<TimeSlot> findByRoomId(Long roomId) {
+        return entityManager
+                .createQuery(
+                        """
+                        SELECT ts
+                        FROM TimeSlot ts
+                        JOIN FETCH ts.studyRoom
+                        WHERE ts.studyRoom.id = :roomId
+                        ORDER BY ts.startTime
+                        """,
+                        TimeSlot.class
+                )
+                .setParameter("roomId", roomId)
                 .getResultList();
     }
 }

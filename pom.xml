@@ -14,9 +14,24 @@
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.boot.version>4.0.8</spring.boot.version>
     </properties>
 
     <dependencies>
+
+        <!-- SPRING BOOT WEB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
+
+        <!-- THYMELEAF PARA LAS VISTAS HTML -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
 
         <!-- ORM: JPA / Hibernate -->
         <dependency>
@@ -75,6 +90,14 @@
     <build>
         <plugins>
 
+            <!-- Spring Boot -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+            </plugin>
+
+            <!-- Pruebas -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

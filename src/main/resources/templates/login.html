@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniRoom | Iniciar sesión</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eff6ff, #f8fafc);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1f2937;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 38px;
+            border-radius: 20px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 13px;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 13px;
+            border-radius: 9px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .demo-box {
+            margin-top: 24px;
+            padding: 15px;
+            background: #eff6ff;
+            border-radius: 10px;
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="logo">
+            UniRoom
+        </div>
+
+        <div class="subtitle">
+            Inicia sesión con tu código institucional para gestionar tus reservas.
+        </div>
+
+        <div
+            th:if="${errorMessage}"
+            class="error"
+            th:text="${errorMessage}">
+            Error de inicio de sesión
+        </div>
+
+        <form action="/login" method="post">
+
+            <div class="form-group">
+                <label for="institutionalCode">
+                    Código institucional
+                </label>
+
+                <input
+                    type="text"
+                    id="institutionalCode"
+                    name="institutionalCode"
+                    placeholder="Ej. 2026001"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Ingresa tu contraseña"
+                    required>
+            </div>
+
+            <button type="submit" class="btn">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <div class="demo-box">
+            <strong>Usuario de prueba</strong><br>
+            Código: 2026001<br>
+            Contraseña: demo
+        </div>
+
+        <a href="/" class="back">
+            ← Volver al inicio
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

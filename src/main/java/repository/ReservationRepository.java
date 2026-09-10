@@ -39,6 +39,7 @@ public class ReservationRepository {
     }
 
     public void delete(Reservation reservation) {
+
         entityManager.remove(
                 entityManager.contains(reservation)
                         ? reservation
@@ -47,6 +48,7 @@ public class ReservationRepository {
     }
 
     public List<Reservation> findAllWithDetails() {
+
         return entityManager
                 .createQuery(
                         """
@@ -55,9 +57,52 @@ public class ReservationRepository {
                         JOIN FETCH r.student
                         JOIN FETCH r.timeSlot ts
                         JOIN FETCH ts.studyRoom
+                        ORDER BY r.createdAt DESC
                         """,
                         Reservation.class
                 )
                 .getResultList();
+    }
+
+    public List<Reservation> findByStudentIdWithDetails(
+            Long studentId) {
+
+        return entityManager
+                .createQuery(
+                        """
+                        SELECT DISTINCT r
+                        FROM Reservation r
+                        JOIN FETCH r.student s
+                        JOIN FETCH r.timeSlot ts
+                        JOIN FETCH ts.studyRoom
+                        WHERE s.id = :studentId
+                        ORDER BY ts.startTime DESC
+                        """,
+                        Reservation.class
+                )
+                .setParameter("studentId", studentId)
+                .getResultList();
+    }
+
+    public boolean existsConfirmedByStudentAndTimeSlot(
+            Long studentId,
+            Long timeSlotId) {
+
+        Long count = entityManager
+                .createQuery(
+                        """
+                        SELECT COUNT(r)
+                        FROM Reservation r
+                        WHERE r.student.id = :studentId
+                        AND r.timeSlot.id = :timeSlotId
+                        AND r.status = 'CONFIRMED'
+                        """,
+                        Long.class
+                )
+                .setParameter("studentId", studentId)
+                .setParameter("timeSlotId", timeSlotId)
+                .getSingleResult();
+
+        return count > 0;
     }
 }

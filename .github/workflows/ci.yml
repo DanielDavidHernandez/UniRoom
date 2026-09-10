@@ -38,5 +38,8 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Run Maven tests
-        run: mvn -B clean test
+      - name: Run Flyway migrations first
+        run: mvn -B -Dtest=integration.MySqlMigrationIntegrationTest test
+
+      - name: Run all Maven tests
+        run: mvn -B test

@@ -18,7 +18,8 @@
     </properties>
 
     <dependencies>
-        <!-- Seguridad para contraseñas -->
+
+        <!-- SEGURIDAD PARA CONTRASEÃ‘AS -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
@@ -39,14 +40,14 @@
             <version>${spring.boot.version}</version>
         </dependency>
 
-        <!-- ORM: JPA / Hibernate -->
+        <!-- ORM: JPA / HIBERNATE -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>7.1.30.Final</version>
         </dependency>
 
-        <!-- MySQL -->
+        <!-- MYSQL -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
@@ -54,7 +55,7 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Flyway -->
+        <!-- FLYWAY -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
@@ -67,7 +68,7 @@
             <version>12.10.0</version>
         </dependency>
 
-        <!-- H2 para pruebas de integración -->
+        <!-- H2 PARA PRUEBAS DE INTEGRACIÃ“N -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -75,7 +76,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- JUnit 5 -->
+        <!-- JUNIT 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -83,7 +84,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- AssertJ -->
+        <!-- ASSERTJ -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -91,19 +92,35 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- PRUEBAS HTTP DE LA API REST CON MOCKMVC -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    
+        <!-- SWAGGER UI Y OPENAPI 3 -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
 
-            <!-- Spring Boot -->
+            <!-- SPRING BOOT -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
             </plugin>
 
-            <!-- Pruebas -->
+            <!-- EJECUCIÃ“N DE PRUEBAS -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

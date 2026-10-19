@@ -413,6 +413,138 @@
             }
         }
 
+
+        /* ASISTENTE VIRTUAL UNIRO0M */
+        .ai-chat-toggle {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 2000;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border: 0;
+            border-radius: 50px;
+            padding: 14px 20px;
+            background: #2563eb;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 9px 30px rgba(37, 99, 235, 0.30);
+            cursor: pointer;
+        }
+
+        .ai-chat-toggle:hover { background: #1d4ed8; }
+        .ai-chat-toggle:focus-visible, .ai-chat-close:focus-visible,
+        .ai-chat-send:focus-visible, .ai-chat-input:focus-visible {
+            outline: 3px solid #93c5fd;
+            outline-offset: 2px;
+        }
+
+        .ai-chat-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 92px;
+            z-index: 2001;
+            width: min(390px, calc(100vw - 32px));
+            height: min(525px, calc(100dvh - 115px));
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border: 1px solid #dbeafe;
+            border-radius: 18px;
+            box-shadow: 0 16px 55px rgba(15, 23, 42, 0.22);
+            overflow: hidden;
+        }
+
+        .ai-chat-panel[hidden] { display: none; }
+        .ai-chat-header {
+            background: #2563eb;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+        }
+        .ai-chat-header strong { display: block; font-size: 16px; }
+        .ai-chat-header small { display: block; opacity: .9; margin-top: 3px; }
+        .ai-chat-close {
+            border: 0;
+            background: transparent;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 18px;
+            background: #f8fafc;
+        }
+        .ai-chat-message {
+            padding: 11px 13px;
+            border-radius: 13px;
+            font-size: 14px;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            max-width: 95%;
+        }
+        .ai-chat-message.assistant {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            align-self: flex-start;
+        }
+        .ai-chat-message.user {
+            background: #dbeafe;
+            color: #1e3a8a;
+            align-self: flex-end;
+        }
+        .ai-chat-form {
+            padding: 13px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            background: #ffffff;
+        }
+        .ai-chat-input {
+            min-height: 43px;
+            max-height: 105px;
+            resize: vertical;
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            padding: 11px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .ai-chat-send {
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+            padding: 12px 14px;
+            cursor: pointer;
+        }
+        .ai-chat-send:disabled { opacity: .55; cursor: wait; }
+        .ai-chat-hint {
+            padding: 0 14px 12px;
+            font-size: 11px;
+            color: #64748b;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .ai-chat-toggle { right: 16px; bottom: 16px; }
+            .ai-chat-panel { right: 16px; bottom: 80px; height: min(525px, calc(100dvh - 105px)); }
+        }
+
     </style>
 </head>
 
@@ -552,22 +684,7 @@
 
 
         <div class="hero-card-item">
-            🕐 Revisa horarios disponibles
-        </div>
-
-
-        <div class="hero-card-item">
-            👥 Consulta la capacidad de cada sala
-        </div>
-
-
-        <div class="hero-card-item">
-            🔒 Reserva con tu cuenta institucional
-        </div>
-
-
-        <div class="db-status">
-            ● Sistema conectado a MySQL
+            🕒 Sistema conectado a MySQL
         </div>
 
 
@@ -756,6 +873,120 @@
 
 </footer>
 
+
+
+<!-- BOTÓN Y VENTANA DEL ASISTENTE DE IA -->
+<button id="aiChatToggle" class="ai-chat-toggle" type="button"
+        aria-controls="aiChatPanel" aria-expanded="false">
+    <span aria-hidden="true">✦</span> Asistente IA
+</button>
+
+<section id="aiChatPanel" class="ai-chat-panel" role="dialog"
+         aria-label="Asistente virtual de UniRoom" hidden>
+    <div class="ai-chat-header">
+        <div>
+            <strong>✦ Asistente UniRoom</strong>
+            <small>Ayuda con salas, horarios y reservas</small>
+        </div>
+        <button id="aiChatClose" class="ai-chat-close" type="button"
+                aria-label="Cerrar asistente">&times;</button>
+    </div>
+    <div id="aiChatMessages" class="ai-chat-messages" role="log"
+         aria-live="polite" aria-relevant="additions text">
+        <div class="ai-chat-message assistant">¡Hola! Soy el asistente de UniRoom. ¿Qué necesitas saber sobre las salas, los horarios o tus reservas?</div>
+    </div>
+    <form id="aiChatForm" class="ai-chat-form">
+        <textarea id="aiChatInput" class="ai-chat-input" rows="1"
+                  maxlength="500" required aria-label="Tu pregunta"
+                  placeholder="Escribe tu pregunta..."></textarea>
+        <button id="aiChatSend" class="ai-chat-send" type="submit">Enviar</button>
+    </form>
+    <p class="ai-chat-hint">La IA orienta sobre UniRoom; no realiza reservas automáticamente.</p>
+</section>
+
+<script>
+    (() => {
+        'use strict';
+
+        const toggle = document.getElementById('aiChatToggle');
+        const panel = document.getElementById('aiChatPanel');
+        const close = document.getElementById('aiChatClose');
+        const form = document.getElementById('aiChatForm');
+        const input = document.getElementById('aiChatInput');
+        const send = document.getElementById('aiChatSend');
+        const messages = document.getElementById('aiChatMessages');
+
+        function setOpen(open) {
+            panel.hidden = !open;
+            toggle.setAttribute('aria-expanded', String(open));
+            if (open) input.focus();
+            else toggle.focus();
+        }
+
+        function appendMessage(text, who) {
+            const bubble = document.createElement('div');
+            bubble.className = 'ai-chat-message ' + who;
+            // textContent prevents HTML/script injection from generated answers.
+            bubble.textContent = text;
+            messages.appendChild(bubble);
+            messages.scrollTop = messages.scrollHeight;
+            return bubble;
+        }
+
+        toggle.addEventListener('click', () => setOpen(panel.hidden));
+        close.addEventListener('click', () => setOpen(false));
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !panel.hidden) setOpen(false);
+        });
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                if (form.requestSubmit) form.requestSubmit();
+            }
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const question = input.value.trim();
+            if (!question || send.disabled) return;
+
+            appendMessage(question, 'user');
+            input.value = '';
+            send.disabled = true;
+            input.disabled = true;
+            const pending = appendMessage('Consultando a Gemini...', 'assistant');
+
+            try {
+                const response = await fetch('/api/v1/ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ pregunta: question, tecnica: 'zero-shot' })
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        throw new Error('Debes iniciar sesión para usar el asistente. Entra en «Iniciar sesión» y vuelve a intentarlo.');
+                    }
+                    throw new Error(data.error || 'No fue posible consultar la IA (HTTP ' + response.status + ').');
+                }
+                pending.textContent = (data.respuesta || 'Gemini no devolvió una respuesta.')
+                    .replace(/\*\*(.*?)\*\*/g, '$1')
+                    .replace(/^#{1,4}\s+/gm, '')
+                    .replace(/\r\n/g, '\n')
+                    .replace(/\n{3,}/g, '\n\n')
+                    .trim();
+            } catch (error) {
+                pending.textContent = error.message || 'No se pudo establecer conexión con el asistente.';
+            } finally {
+                send.disabled = false;
+                input.disabled = false;
+                input.focus();
+                messages.scrollTop = messages.scrollHeight;
+            }
+        });
+    })();
+</script>
 
 </body>
 

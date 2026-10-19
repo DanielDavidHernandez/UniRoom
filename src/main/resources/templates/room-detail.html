@@ -360,30 +360,34 @@
             class="slot"
             th:each="slot : ${timeSlots}">
 
+            
             <div>
 
+                <!-- HORARIO -->
                 <div class="time">
 
-                    <span th:text="${slot.startTime.toLocalTime()}">
-                        08:00
+                    <span th:text="${#temporals.format(slot.startTime.toLocalTime(), 'h:mm a', T(java.util.Locale).US)}">
+                        8:00 AM
                     </span>
 
-                    -
+                    a
 
-                    <span th:text="${slot.endTime.toLocalTime()}">
-                        09:00
+                    <span th:text="${#temporals.format(slot.endTime.toLocalTime(), 'h:mm a', T(java.util.Locale).US)}">
+                        10:00 AM
                     </span>
 
                 </div>
 
+                <!-- FECHA -->
                 <div
                     class="date"
-                    th:text="${slot.startTime.toLocalDate()}">
+                    th:text="${#temporals.format(slot.startTime.toLocalDate(), 'd ''de'' MMMM ''de'' yyyy', T(java.util.Locale).forLanguageTag('es-CO'))}">
 
-                    2026-09-10
+                    19 de octubre de 2026
 
                 </div>
 
+                <!-- ESTADO: DISPONIBLE -->
                 <div
                     th:if="${slot.status == 'AVAILABLE'}"
                     class="available">
@@ -392,6 +396,7 @@
 
                 </div>
 
+                <!-- ESTADO: RESERVADA -->
                 <div
                     th:unless="${slot.status == 'AVAILABLE'}"
                     class="reserved">
@@ -401,6 +406,7 @@
                 </div>
 
             </div>
+
 
 
             <div class="actions">

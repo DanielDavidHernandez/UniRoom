@@ -1,5 +1,6 @@
 package com.proyectoreservas.web;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import config.JpaUtil;
 import entity.Student;
 import jakarta.persistence.EntityManager;
@@ -53,7 +54,9 @@ public class LoginController {
 
             Student student = studentOptional.get();
 
-            if (!student.getPasswordHash().equals(password)) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+            if (!encoder.matches(password, student.getPasswordHash())) {
 
                 model.addAttribute(
                         "errorMessage",

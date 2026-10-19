@@ -313,20 +313,20 @@
                 <p>
                     📅
                     <span
-                        th:text="${reservation.timeSlot.startTime.toLocalDate()}">
+                        th:text="${#temporals.format(reservation.timeSlot.startTime.toLocalDate(), 'd ''de'' MMMM ''de'' yyyy', T(java.util.Locale).forLanguageTag('es-CO'))}">
                     </span>
                 </p>
 
                 <p>
                     🕐
                     <span
-                        th:text="${reservation.timeSlot.startTime.toLocalTime()}">
+                        th:text="${#temporals.format(reservation.timeSlot.startTime.toLocalTime(), 'h:mm a', T(java.util.Locale).US)}">
                     </span>
 
-                    -
+                    a
 
                     <span
-                        th:text="${reservation.timeSlot.endTime.toLocalTime()}">
+                        th:text="${#temporals.format(reservation.timeSlot.endTime.toLocalTime(), 'h:mm a', T(java.util.Locale).US)}">
                     </span>
                 </p>
 
@@ -423,20 +423,20 @@
                 <p>
                     📅
                     <span
-                        th:text="${entry.timeSlot.startTime.toLocalDate()}">
+                        th:text="${#temporals.format(entry.timeSlot.startTime.toLocalDate(), 'd ''de'' MMMM ''de'' yyyy', T(java.util.Locale).forLanguageTag('es-CO'))}">
                     </span>
                 </p>
 
                 <p>
                     🕐
                     <span
-                        th:text="${entry.timeSlot.startTime.toLocalTime()}">
+                        th:text="${#temporals.format(entry.timeSlot.startTime.toLocalTime(), 'h:mm a', T(java.util.Locale).US)}">
                     </span>
 
-                    -
+                    a
 
                     <span
-                        th:text="${entry.timeSlot.endTime.toLocalTime()}">
+                        th:text="${#temporals.format(entry.timeSlot.endTime.toLocalTime(), 'h:mm a', T(java.util.Locale).US)}">
                     </span>
                 </p>
 

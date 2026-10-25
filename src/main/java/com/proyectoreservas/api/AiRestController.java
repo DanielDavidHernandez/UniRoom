@@ -228,13 +228,35 @@ public class AiRestController {
 
         try {
 
-            Map<?, ?> result = restClient.post()
-                    .uri(GEMINI_URL)
-                    .header("x-goog-api-key", apiKey)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(payload)
-                    .retrieve()
-                    .body(Map.class);
+            Map<?, ?> result = null;
+
+            for (int intento = 1; intento <= 3; intento++) {
+                try {
+                    result = restClient.post()
+                            .uri(GEMINI_URL)
+                            .header("x-goog-api-key", apiKey)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(payload)
+                            .retrieve()
+                            .body(Map.class);
+
+                    break;
+
+                } catch (org.springframework.web.client.HttpServerErrorException e) {
+
+                    if (e.getStatusCode().value() != 503 || intento == 3) {
+                        throw e;
+                    }
+
+                    try {
+                        Thread.sleep(1000L * (1L << (intento - 1)));
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        throw new IllegalStateException(
+                                "La solicitud a Gemini fue interrumpida.", ex);
+                    }
+                }
+            }
 
             String answer = extractAnswer(result);
 

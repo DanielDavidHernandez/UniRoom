@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: uniroom_db
+      MYSQL_USER: uniroom
+      MYSQL_PASSWORD: ${UNIROOM_DB_PASSWORD:?Set UNIROOM_DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      UNIROOM_DB_URL: "jdbc:mysql://db:3306/uniroom_db?useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=America/Bogota"
+      UNIROOM_DB_USER: uniroom
+      UNIROOM_DB_PASSWORD: ${UNIROOM_DB_PASSWORD:?Set UNIROOM_DB_PASSWORD in .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c ': </dev/tcp/127.0.0.1/8080'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+
+volumes:
+  mysql_data:

@@ -1,0 +1,12 @@
+target/
+.git/
+.github/
+.vscode/
+.idea/
+*.log
+.env
+.env.*
+!*.example
+*.zip
+*.docx
+*.pptx

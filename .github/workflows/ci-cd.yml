@@ -77,4 +77,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       # Railway builds the current Dockerfile from this commit, then deploys it.
-      - run: railway up --service "$RAILWAY_SERVICE_ID" --ci
+     - run: railway up --project ee97a75c-1831-45de-b96c-a122c292e56d --environment production --service "$RAILWAY_SERVICE_ID" --ci

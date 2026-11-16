@@ -5,3 +5,8 @@ target/
 .DS_Store
 bin/
 *.class
+
+# Local-only credentials
+.env
+.env.*
+!.env.example

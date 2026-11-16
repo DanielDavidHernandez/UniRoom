@@ -2,6 +2,7 @@ package config;
 
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import org.flywaydb.core.Flyway;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +26,29 @@ public final class JpaUtil {
             );
         }
 
-        Map<String, Object> properties = new HashMap<>();
+        // Local settings remain unchanged unless Docker/Railway supplies variables.
+        String jdbcUrl = System.getenv("UNIROOM_DB_URL");
+        if (jdbcUrl == null || jdbcUrl.isBlank()) {
+            jdbcUrl = "jdbc:mysql://localhost:3306/uniroom_db"
+                    + "?useSSL=false&allowPublicKeyRetrieval=true"
+                    + "&connectionTimeZone=America/Bogota";
+        }
+        String dbUser = System.getenv("UNIROOM_DB_USER");
+        if (dbUser == null || dbUser.isBlank()) {
+            dbUser = "root";
+        }
 
-        properties.put(
-                "jakarta.persistence.jdbc.password",
-                password
-        );
+        // Fresh cloud databases require the same Flyway migrations as local CI.
+        Flyway.configure()
+                .dataSource(jdbcUrl, dbUser, password)
+                .locations("classpath:db/migration")
+                .load()
+                .migrate();
+
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("jakarta.persistence.jdbc.url", jdbcUrl);
+        properties.put("jakarta.persistence.jdbc.user", dbUser);
+        properties.put("jakarta.persistence.jdbc.password", password);
 
         return Persistence.createEntityManagerFactory(
                 "uniroom-mysql",
